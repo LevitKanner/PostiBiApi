@@ -1,13 +1,13 @@
 using Api.Entities.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api;
 
-public class ApplicationContext: DbContext
+public class ApplicationContext : IdentityDbContext<ApplicationUser>
 {
-    public ApplicationContext(DbContextOptions<ApplicationContext> options): base(options)
+    public ApplicationContext(DbContextOptions options) : base(options)
     {
-        
     }
 
     public DbSet<Post>? Posts { get; set; }
