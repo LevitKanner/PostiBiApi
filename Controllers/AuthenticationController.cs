@@ -1,3 +1,4 @@
+using Api.Contracts.ServiceContracts;
 using Api.Entities.Dtos;
 using Api.Entities.Models;
 using Microsoft.AspNetCore.Identity;
@@ -9,31 +10,23 @@ namespace Api.Controllers;
 [Route("api/[controller]/[action]")]
 public class AuthenticationController : ControllerBase
 {
-    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly IServiceManager _serviceManager;
 
-    public AuthenticationController(UserManager<ApplicationUser> userManager)
+    public AuthenticationController(IServiceManager serviceManager)
     {
-        _userManager = userManager;
+        _serviceManager = serviceManager;
     }
 
     [HttpPost]
     public async Task<IActionResult> Register(RegisterUserDto registerUserDto)
     {
-        if (!ModelState.IsValid)
+        var result = await _serviceManager.AuthenticationService.RegisterUser(registerUserDto);
+        if (result.Succeeded) return StatusCode(201);
+        foreach (var error in result.Errors)
         {
-            return UnprocessableEntity(ModelState);
+            ModelState.TryAddModelError(error.Code, error.Description);
         }
-        var result = await _userManager.CreateAsync(new ApplicationUser
-        {
-            UserName = registerUserDto.Username,
-            Email = registerUserDto.Email,
-            FirstName = registerUserDto.FirstName,
-            LastName = registerUserDto.LastName,
-            PasswordHash = registerUserDto.Password
-        });
-        if (result.Succeeded) return Ok(new { StatusCode = StatusCodes.Status200OK, Message = "Success" });
-        return UnprocessableEntity(result.Errors);
+
+        return BadRequest(ModelState);
     }
-    
-    
 }
