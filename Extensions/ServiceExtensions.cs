@@ -1,10 +1,13 @@
+using System.Text;
 using Api.Contracts;
 using Api.Contracts.ServiceContracts;
 using Api.Entities.Models;
 using Api.Repositories;
 using Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Extensions;
 
@@ -42,5 +45,30 @@ public static class ServiceExtensions
             })
             .AddEntityFrameworkStores<ApplicationContext>()
             .AddDefaultTokenProviders();
+    }
+
+    public static void ConfigureJwt(this IServiceCollection services, IConfiguration configuration)
+    {
+        var jwtSettings = configuration.GetSection("JwtSettings");
+        var secret = configuration.GetValue<string>("secretKey");
+        services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
+                    ValidAudience = jwtSettings["ValidAudience"],
+                    ValidIssuer = jwtSettings["ValidIssuer"]
+                };
+            });
     }
 }
