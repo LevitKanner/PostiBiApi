@@ -1,3 +1,5 @@
+using Api.Contracts.RepositoryContracts;
+
 namespace Api.Contracts;
 
 public interface IRepositoryManager

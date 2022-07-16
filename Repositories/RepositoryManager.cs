@@ -1,4 +1,5 @@
 using Api.Contracts;
+using Api.Contracts.RepositoryContracts;
 
 namespace Api.Repositories;
 
