@@ -1,10 +1,10 @@
 using Api.Entities.Models;
 
-namespace Api.Contracts;
+namespace Api.Contracts.RepositoryContracts;
 
 public interface IPostRepository
 {
-    Task<IEnumerable<Post>> GetAllPostsAsync(int userId, bool trackChanges);
-    Task<Post> GetPostByIdAsync(int postId, bool trackChanges);
-    void DeletePost(int postId);
+    IEnumerable<Post> GetUserPosts(string userId, bool trackChanges);
+    Post? GetPost(string userId, int postId, bool trackChanges);
+    void DeletePost(Post post);
 }

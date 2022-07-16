@@ -1,26 +1,20 @@
 using Api.Contracts;
+using Api.Contracts.RepositoryContracts;
 using Api.Entities.Models;
 
 namespace Api.Repositories;
 
-public class PostRepository: RepositoryBase<Post>, IPostRepository
+public class PostRepository : RepositoryBase<Post>, IPostRepository
 {
     public PostRepository(ApplicationContext context) : base(context)
     {
     }
 
-    public async Task<IEnumerable<Post>> GetAllPostsAsync(int userId, bool trackChanges)
-    {
-        throw new NotImplementedException();
-    }
+    public IEnumerable<Post> GetUserPosts(string userId, bool trackChanges) =>
+        FindByCondition(post => post.UserId == userId, trackChanges).OrderBy(post => post.CreatedAt);
+    
+    public Post? GetPost(string userId, int postId, bool trackChanges) =>
+        FindByCondition(post => post.UserId == userId && post.Id == postId, trackChanges).SingleOrDefault();
 
-    public async Task<Post> GetPostByIdAsync(int postId, bool trackChanges)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void DeletePost(int postId)
-    {
-        throw new NotImplementedException();
-    }
+    public void DeletePost(Post post) => Delete(post);
 }
