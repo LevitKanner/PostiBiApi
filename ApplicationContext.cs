@@ -18,4 +18,5 @@ public class ApplicationContext : IdentityDbContext<ApplicationUser>
     }
 
     public DbSet<Post>? Posts { get; set; }
+    public DbSet<UserFollowing>? UserFollowings { get; set; }
 }
