@@ -1,3 +1,3 @@
 namespace Api.Entities.Dtos;
 
-public record FollowUserDto();
+public record FollowUserDto(string userToFollow);
