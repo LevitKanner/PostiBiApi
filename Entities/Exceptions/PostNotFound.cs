@@ -1,6 +1,8 @@
 namespace Api.Entities.Exceptions;
 
-public class PostNotFound
+public sealed class PostNotFound : NotFoundException
 {
-    
+    public PostNotFound(string message) : base(message)
+    {
+    }
 }
