@@ -1,3 +1,3 @@
 namespace Api.Entities.Dtos;
 
-public record Response(int StatusCode, string Message, object Payload);
+public record Response(int StatusCode, string Message, object? Payload);
