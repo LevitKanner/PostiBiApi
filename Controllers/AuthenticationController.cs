@@ -21,12 +21,22 @@ public class AuthenticationController : ControllerBase
     public async Task<IActionResult> Register(RegisterUserDto registerUserDto)
     {
         var result = await _serviceManager.AuthenticationService.RegisterUser(registerUserDto);
-        if (result.Succeeded) return StatusCode(201);
+        if (result.Succeeded) return Ok(new Response(StatusCodes.Status201Created, "Success", null));
         foreach (var error in result.Errors)
         {
-            ModelState.TryAddModelError(error.Code, error.Description);
+            ModelState.TryAddModelError("Errors", error.Description);
         }
 
         return BadRequest(ModelState);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto credentials)
+    {
+        if (!await _serviceManager.AuthenticationService.ValidateUser(credentials))
+            return Unauthorized();
+
+        var token = await _serviceManager.AuthenticationService.CreateToken();
+        return Ok(new Response(StatusCodes.Status200OK, "Success", token));
     }
 }

@@ -35,4 +35,11 @@ public class UserController : ControllerBase
         await _serviceManager.UserService.FollowUser(userId, followUserDto.userToFollow);
         return Ok(new Response(StatusCodes.Status200OK, "Success", null));
     }
+
+    [HttpDelete("{userId}/unfollow")]
+    public IActionResult UnfollowUser([FromBody] FollowUserDto followUserDto, string userId)
+    {
+        _serviceManager.UserService.UnfollowUser(userId, followUserDto.userToFollow);
+        return Ok(new Response(StatusCodes.Status200OK, "Success", null));
+    }
 }

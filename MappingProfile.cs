@@ -9,5 +9,9 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<RegisterUserDto, ApplicationUser>();
+        CreateMap<CreatePostDto, Post>();
+        CreateMap<Post, PostDto>().ForMember(post => post.CreatedAt,
+            expression => expression.MapFrom(post => $"{post.CreatedAt:F}"));
+        CreateMap<ApplicationUser, UserDto>();
     }
 }

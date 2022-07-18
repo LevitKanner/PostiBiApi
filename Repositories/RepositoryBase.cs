@@ -8,7 +8,7 @@ public class RepositoryBase<T> : IRepositoryBase<T> where T : class
 {
     private readonly ApplicationContext _context;
 
-    public RepositoryBase(ApplicationContext context)
+    protected RepositoryBase(ApplicationContext context)
     {
         _context = context;
     }

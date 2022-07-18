@@ -14,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddAuthentication();
 builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJwt(configuration);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -27,7 +28,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseDeveloperExceptionPage();
 }
 else
 {
