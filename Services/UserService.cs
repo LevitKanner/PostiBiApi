@@ -24,9 +24,9 @@ public class UserService : IUserService
         return _mapper.Map<IEnumerable<UserDto>>(users);
     }
 
-    public UserDto? GetUser(string userId)
+    public async Task<UserDto?> GetUser(string userId)
     {
-        var user = _repositoryManager.UserRepository.GetUser(userId);
+        var user = await _repositoryManager.UserRepository.GetUser(userId);
         if (user is null) throw new UserNotFoundException($"User with id: {userId} does not exist");
         return _mapper.Map<UserDto>(user);
     }
