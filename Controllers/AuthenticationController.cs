@@ -1,7 +1,5 @@
 using Api.Contracts.ServiceContracts;
 using Api.Entities.Dtos;
-using Api.Entities.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
