@@ -37,4 +37,11 @@ public class AuthenticationController : ControllerBase
         var tokens = await _serviceManager.AuthenticationService.CreateToken(true);
         return Ok(new Response(StatusCodes.Status200OK, "Success", tokens));
     }
+
+    [HttpPost]
+    public async Task<IActionResult> Refresh([FromBody] TokenDto tokenDto)
+    {
+        var newTokens = await _serviceManager.AuthenticationService.RefreshToken(tokenDto);
+        return Ok(new Response(StatusCodes.Status200OK, "Success", newTokens));
+    }
 }

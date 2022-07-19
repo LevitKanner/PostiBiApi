@@ -4,6 +4,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Api.Contracts.ServiceContracts;
 using Api.Entities.Dtos;
+using Api.Entities.Exceptions;
 using Api.Entities.Models;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
@@ -47,15 +48,28 @@ public class AuthenticationService : IAuthenticationService
         var signingCredentials = GetSigningCredentials();
         var claims = await GetClaims();
         var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
-        
+
         var refreshToken = GenerateRefreshToken();
         _user.RefreshToken = refreshToken;
-        
-        if (populateExp) 
+
+        if (populateExp)
             _user.RefreshTokenExpiryDate = DateTime.Now.AddDays(7);
         await _userManager.UpdateAsync(_user);
         var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         return new TokenDto(accessToken, refreshToken);
+    }
+
+    public async Task<TokenDto> RefreshToken(TokenDto tokens)
+    {
+        var principal = GetPrincipalFromExpiredToken(tokens.AccessToken);
+        var user = await _userManager.FindByNameAsync(principal.Identity?.Name);
+        if (user == null || user.RefreshToken != tokens.RefreshToken || user.RefreshTokenExpiryDate <= DateTime.Now)
+        {
+            throw new RefreshTokenBadRequest("Invalid Refresh token");
+        }
+
+        _user = user;
+        return await CreateToken(false);
     }
 
     private SigningCredentials GetSigningCredentials()
@@ -117,13 +131,14 @@ public class AuthenticationService : IAuthenticationService
         var tokenHandler = new JwtSecurityTokenHandler();
 
         var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-        
+
         if (securityToken is not JwtSecurityToken jwtSecurityToken ||
             !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256,
                 StringComparison.InvariantCultureIgnoreCase))
         {
             throw new SecurityTokenException("Invalid token");
         }
+
         return principal;
     }
 }
