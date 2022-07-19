@@ -3,6 +3,7 @@ using System;
 using Api;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Api.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20220719134223_AddRefreshToken")]
+    partial class AddRefreshToken
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,15 +224,15 @@ namespace Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "86c39fd5-74f6-4f53-bce7-b9b7e733ebb6",
-                            ConcurrencyStamp = "aa3b2a52-4941-469c-8472-04c654151934",
+                            Id = "d50effa0-fde8-4184-86e0-c254e092dea3",
+                            ConcurrencyStamp = "dd2712d2-d3a1-466a-ad18-6fea7c986e9e",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "42dc1419-f607-4132-80c3-b1dbe47f48f4",
-                            ConcurrencyStamp = "b809f30f-df95-400d-90d2-17d8f3e865d6",
+                            Id = "0246ff2b-4888-45b0-b4fc-fe80822274be",
+                            ConcurrencyStamp = "f791a9cc-029e-49c4-a557-1d4ed308a0a5",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
