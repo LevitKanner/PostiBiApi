@@ -53,7 +53,7 @@ public class AuthenticationService : IAuthenticationService
         _user.RefreshToken = refreshToken;
 
         if (populateExp)
-            _user.RefreshTokenExpiryDate = DateTime.Now.AddDays(7);
+            _user.RefreshTokenExpiryDate = DateTime.UtcNow.AddDays(7);
         await _userManager.UpdateAsync(_user);
         var accessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
         return new TokenDto(accessToken, refreshToken);
