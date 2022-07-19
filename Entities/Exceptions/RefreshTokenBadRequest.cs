@@ -1,6 +1,8 @@
 namespace Api.Entities.Exceptions;
 
-public class RefreshTokenBadRequest
+public class RefreshTokenBadRequest: BadRequestException 
 {
-    
+    public RefreshTokenBadRequest(string message) : base(message)
+    {
+    }
 }
