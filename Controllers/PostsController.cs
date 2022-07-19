@@ -1,9 +1,10 @@
 using Api.Contracts.ServiceContracts;
 using Api.Entities.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
-
+[Authorize]
 [ApiController]
 [Route("api/users/{userId}/posts")]
 public class PostsController : ControllerBase
