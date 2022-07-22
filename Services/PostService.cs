@@ -85,6 +85,6 @@ public class PostService : IPostService
             followingPosts.AddRange(_mapper.Map<IEnumerable<PostDto>>(posts));
         }
 
-        return followingPosts;
+        return followingPosts.OrderBy(post => post.CreatedAt);
     }
 }
