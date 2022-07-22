@@ -9,4 +9,6 @@ public interface IUserRepository
     void FollowUser(string userId, string userToFollow);
     void UnFollowUser(UserFollowing following);
     UserFollowing? GetFollowing(string userId, string following);
+    IEnumerable<string>? GetUserFollowings(string userId);
+    IEnumerable<string>? GetUserFollowers(string userId);
 }
