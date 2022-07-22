@@ -50,4 +50,34 @@ public class UserService : IUserService
         _repositoryManager.UserRepository.UnFollowUser(following);
         _repositoryManager.Save();
     }
+
+    public async Task<IEnumerable<UserDto>> GetUserFollowers(string userId)
+    {
+        var followers = _repositoryManager.UserRepository.GetUserFollowers(userId);
+        var followersList = new List<UserDto>();
+
+        if (followers is null) return followersList;
+        foreach (var id in followers)
+        {
+            var user = await _repositoryManager.UserRepository.GetUser(id);
+            followersList.Add(_mapper.Map<UserDto>(user));
+        }
+
+        return followersList;
+    }
+
+    public async Task<IEnumerable<UserDto>> GetUserFollowings(string userId)
+    {
+        var followings = _repositoryManager.UserRepository.GetUserFollowings(userId);
+        var followingList = new List<UserDto>();
+
+        if (followings is null) return followingList;
+        foreach (var id in followings)
+        {
+            var user = await _repositoryManager.UserRepository.GetUser(id);
+            followingList.Add(_mapper.Map<UserDto>(user));
+        }
+
+        return followingList;
+    }
 }
