@@ -46,6 +46,20 @@ public class UserRepository : RepositoryBase<UserFollowing>, IUserRepository
     public UserFollowing? GetFollowing(string userId, string following)
     {
         return _context.UserFollowings?.FirstOrDefault(userFollowing =>
-            userFollowing.UserId.Equals(userId) && userFollowing.UserFollowedId.Equals(userFollowing));
+            userFollowing.UserId.Equals(userId) && userFollowing.UserFollowedId.Equals(following));
+    }
+
+    public IEnumerable<string>? GetUserFollowings(string userId)
+    {
+        return _context.UserFollowings?.Where(uf => uf.UserId.Equals(userId))
+            .Select(uf => uf.UserFollowedId)
+            .ToList();
+    }
+
+    public IEnumerable<string>? GetUserFollowers(string userId)
+    {
+        return _context.UserFollowings?.Where(uf => uf.UserFollowedId.Equals(userId))
+            .Select(uf => uf.UserId)
+            .ToList();
     }
 }
