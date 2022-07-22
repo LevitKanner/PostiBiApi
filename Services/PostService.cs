@@ -21,10 +21,10 @@ public class PostService : IPostService
         _userManager = userManager;
     }
 
-    public IEnumerable<Post> GetAllPost(bool trackChanges)
+    public IEnumerable<PostDto> GetAllPost(bool trackChanges)
     {
         var posts = _repositoryManager.PostRepository.GetAllPosts(trackChanges);
-        return posts;
+        return _mapper.Map<IEnumerable<PostDto>>(posts);
     }
 
     public async Task<IEnumerable<PostDto>> GetUserPosts(string userId, bool trackChanges)
@@ -40,10 +40,9 @@ public class PostService : IPostService
         if (user is null) throw new UserNotFoundException($"User with id {userId} not found");
     }
 
-    public async Task<PostDto?> GetPost(string userId, int postId, bool trackChanges)
+    public PostDto? GetPost(int postId, bool trackChanges)
     {
-        await FindUser(userId);
-        var post = _repositoryManager.PostRepository.GetPost(userId, postId, trackChanges);
+        var post = _repositoryManager.PostRepository.GetPost(postId, trackChanges);
         if (post is null) throw new PostNotFound($"Post with id {postId} not found in database");
         return _mapper.Map<PostDto>(post);
     }
@@ -57,12 +56,35 @@ public class PostService : IPostService
         return _mapper.Map<PostDto>(post);
     }
 
-    public async Task DeletePost(string userId, int postId)
+    public void UpdatePost(int postId, UpdatePostDto updatePostDto)
     {
-        await FindUser(userId);
-        var post = _repositoryManager.PostRepository.GetPost(userId, postId, true);
+        var post = _repositoryManager.PostRepository.GetPost(postId, true);
+        if (post is null) throw new PostNotFound($"Post with id {postId} not found in database");
+        post.UpdatedAt = DateTime.UtcNow;
+        _mapper.Map(updatePostDto, post);
+        _repositoryManager.Save();
+    }
+
+    public void DeletePost(int postId)
+    {
+        var post = _repositoryManager.PostRepository.GetPost(postId, true);
         if (post is null) throw new PostNotFound($"Post with id {postId} not found in database");
         _repositoryManager.PostRepository.DeletePost(post);
         _repositoryManager.Save();
+    }
+
+    public IEnumerable<PostDto> GetFollowingPosts(string userId)
+    {
+        var followings = _repositoryManager.UserRepository.GetUserFollowings(userId);
+        var followingPosts = new List<PostDto>();
+        if (followings is null) return followingPosts;
+
+        foreach (var id in followings)
+        {
+            var posts = _repositoryManager.PostRepository.GetUserPosts(id, false);
+            followingPosts.AddRange(_mapper.Map<IEnumerable<PostDto>>(posts));
+        }
+
+        return followingPosts;
     }
 }
