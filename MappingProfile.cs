@@ -13,5 +13,6 @@ public class MappingProfile : Profile
         CreateMap<Post, PostDto>().ForMember(post => post.CreatedAt,
             expression => expression.MapFrom(post => $"{post.CreatedAt:F}"));
         CreateMap<ApplicationUser, UserDto>();
+        CreateMap<UpdatePostDto, Post>();
     }
 }
