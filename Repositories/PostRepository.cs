@@ -21,8 +21,8 @@ public class PostRepository : RepositoryBase<Post>, IPostRepository
             .Include(post => post.User)
             .OrderBy(post => post.CreatedAt);
 
-    public Post? GetPost(string userId, int postId, bool trackChanges) =>
-        FindByCondition(post => post.UserId == userId && post.Id == postId, trackChanges).SingleOrDefault();
+    public Post? GetPost(int postId, bool trackChanges) =>
+        FindByCondition(post => post.Id == postId, trackChanges).SingleOrDefault();
 
     public void CreatePost(string userId, Post post)
     {
