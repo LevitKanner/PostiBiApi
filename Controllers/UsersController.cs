@@ -51,4 +51,11 @@ public class UsersController : ControllerBase
         var followers = await _serviceManager.UserService.GetUserFollowers(userId);
         return Ok(new Response(StatusCodes.Status200OK, "Success", followers));
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUserFollowing([FromQuery] string userId)
+    {
+        var followings = await _serviceManager.UserService.GetUserFollowings(userId);
+        return Ok(new Response(StatusCodes.Status200OK, "Success", followings));
+    }
 }
