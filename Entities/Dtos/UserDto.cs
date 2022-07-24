@@ -1,3 +1,3 @@
 namespace Api.Entities.Dtos;
 
-public record UserDto(string Id, string Username, string LastName, string FirstName);
+public record UserDto(string Id, string Username, string LastName, string FirstName, string Email);
