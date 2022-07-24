@@ -37,10 +37,12 @@ public class AuthenticationService : IAuthenticationService
         return result;
     }
 
-    public async Task<bool> ValidateUser(UserForAuthenticationDto userForAuth)
+    public async Task<UserDto?> ValidateUser(UserForAuthenticationDto userForAuth)
     {
         _user = await _userManager.FindByNameAsync(userForAuth.UserName);
-        return _user != null && await _userManager.CheckPasswordAsync(_user, userForAuth.Password);
+        return _user != null && await _userManager.CheckPasswordAsync(_user, userForAuth.Password)
+            ? _mapper.Map<UserDto>(_user)
+            : null;
     }
 
     public async Task<TokenDto> CreateToken(bool populateExp)
