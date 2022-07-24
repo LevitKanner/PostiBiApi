@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/auth/[action]")]
 public class AuthenticationController : ControllerBase
 {
     private readonly IServiceManager _serviceManager;
@@ -20,22 +20,20 @@ public class AuthenticationController : ControllerBase
     {
         var result = await _serviceManager.AuthenticationService.RegisterUser(registerUserDto);
         if (result.Succeeded) return Ok(new Response(StatusCodes.Status201Created, "Success", null));
-        foreach (var error in result.Errors)
-        {
-            ModelState.TryAddModelError("Errors", error.Description);
-        }
-
-        return BadRequest(ModelState);
+        var errors = result.Errors.Select(error => error.Description).ToList();
+        return BadRequest(errors);
     }
 
     [HttpPost]
     public async Task<IActionResult> Login([FromBody] UserForAuthenticationDto credentials)
     {
-        if (!await _serviceManager.AuthenticationService.ValidateUser(credentials))
-            return Unauthorized();
+        var user = await _serviceManager.AuthenticationService.ValidateUser(credentials);
+        if (user is null)
+            return Unauthorized(new Response(StatusCodes.Status401Unauthorized, "Incorrect username or password",
+                null));
 
         var tokens = await _serviceManager.AuthenticationService.CreateToken(true);
-        return Ok(new Response(StatusCodes.Status200OK, "Success", tokens));
+        return Ok(new Response(StatusCodes.Status200OK, "Success", new { tokens, user }));
     }
 
     [HttpPost]
