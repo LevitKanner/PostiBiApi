@@ -7,7 +7,7 @@ namespace Api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 public class PostsController : ControllerBase
 {
     private readonly IServiceManager _serviceManager;
@@ -24,15 +24,15 @@ public class PostsController : ControllerBase
         return Ok(new Response(StatusCodes.Status200OK, "Success", posts));
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetUserPostsAsync([FromQuery] string userId)
+    [HttpGet("user-posts/{userId}")]
+    public async Task<IActionResult> GetUserPostsAsync(string userId)
     {
         var posts = await _serviceManager.PostService.GetUserPosts(userId, false);
         return Ok(new Response(StatusCodes.Status200OK, "Success", posts));
     }
 
-    [HttpGet]
-    public IActionResult GetPostAsync([FromQuery] int postId)
+    [HttpGet("{postId:int}")]
+    public IActionResult GetPostAsync(int postId)
     {
         var post = _serviceManager.PostService.GetPost(postId, false);
         return Ok(new Response(StatusCodes.Status200OK, "Success", post));
@@ -45,22 +45,21 @@ public class PostsController : ControllerBase
         return Ok(new Response(StatusCodes.Status200OK, "Success", createdPost));
     }
 
-    [HttpPut]
-    public IActionResult UpdatePost([FromBody] UpdatePostDto updatePostDto,
-        [FromQuery] int postId)
+    [HttpPut("{postId:int}")]
+    public IActionResult UpdatePost([FromBody] UpdatePostDto updatePostDto, int postId)
     {
         _serviceManager.PostService.UpdatePost(postId, updatePostDto);
         return Ok(new Response(StatusCodes.Status200OK, "Success", null));
     }
 
-    [HttpDelete]
-    public IActionResult DeletePost([FromQuery] int postId)
+    [HttpDelete("{postId:int}")]
+    public IActionResult DeletePost(int postId)
     {
         _serviceManager.PostService.DeletePost(postId);
         return Ok(new Response(StatusCodes.Status204NoContent, "Success", null));
     }
 
-    [HttpGet]
+    [HttpGet("user-following/{userId}")]
     public IActionResult GetFollowingPosts(string userId)
     {
         var posts = _serviceManager.PostService.GetFollowingPosts(userId);
