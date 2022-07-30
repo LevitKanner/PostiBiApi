@@ -15,7 +15,11 @@ public static class ServiceExtensions
 {
     public static void ConfigureCors(this IServiceCollection services) => services.AddCors(options =>
         options.AddPolicy("CorsPolicy",
-            builder => builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
+            builder => builder
+                .AllowAnyHeader()
+                .AllowCredentials()
+                .AllowAnyMethod()
+                .SetIsOriginAllowed(origin => origin.ToLower().StartsWith("http://localhost"))));
 
     public static void ConfigureIis(this IServiceCollection services) => services.Configure<IISOptions>(options => { });
 
