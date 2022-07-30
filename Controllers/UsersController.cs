@@ -7,7 +7,7 @@ namespace Api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("api/[controller]/[action]")]
+[Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
     private readonly IServiceManager _serviceManager;
@@ -24,7 +24,7 @@ public class UsersController : ControllerBase
         return Ok(new Response(StatusCodes.Status200OK, "Success", users));
     }
 
-    [HttpGet]
+    [HttpGet("{userId}")]
     public async Task<IActionResult> GetUser([FromQuery] string userId)
     {
         var user = await _serviceManager.UserService.GetUser(userId);
@@ -45,15 +45,15 @@ public class UsersController : ControllerBase
         return Ok(new Response(StatusCodes.Status200OK, "Success", null));
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetUserFollowers([FromQuery] string userId)
+    [HttpGet("followers/{userId}")]
+    public async Task<IActionResult> GetUserFollowers(string userId)
     {
         var followers = await _serviceManager.UserService.GetUserFollowers(userId);
         return Ok(new Response(StatusCodes.Status200OK, "Success", followers));
     }
 
-    [HttpGet]
-    public async Task<IActionResult> GetUserFollowing([FromQuery] string userId)
+    [HttpGet("following/{userId}")]
+    public async Task<IActionResult> GetUserFollowing(string userId)
     {
         var followings = await _serviceManager.UserService.GetUserFollowings(userId);
         return Ok(new Response(StatusCodes.Status200OK, "Success", followings));
