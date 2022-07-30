@@ -33,6 +33,12 @@ public class AuthenticationController : ControllerBase
                 null));
 
         var tokens = await _serviceManager.AuthenticationService.CreateToken(true);
+        Response.Cookies.Append("refresh-token", tokens.RefreshToken, new CookieOptions
+        {
+            Secure = true,
+            SameSite = SameSiteMode.None,
+            HttpOnly = true
+        });
         return Ok(new Response(StatusCodes.Status200OK, "Success", new { tokens, user }));
     }
 
