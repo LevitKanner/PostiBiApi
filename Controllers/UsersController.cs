@@ -25,20 +25,20 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{userId}")]
-    public async Task<IActionResult> GetUser([FromQuery] string userId)
+    public async Task<IActionResult> GetUser(string userId)
     {
         var user = await _serviceManager.UserService.GetUser(userId);
         return Ok(new Response(StatusCodes.Status200OK, "Success", user));
     }
 
-    [HttpPost]
+    [HttpPost("follow")]
     public async Task<IActionResult> FollowUser([FromBody] FollowUserDto followUserDto, [FromQuery] string userId)
     {
         await _serviceManager.UserService.FollowUser(userId, followUserDto.userToFollow);
         return Ok(new Response(StatusCodes.Status200OK, "Success", null));
     }
 
-    [HttpDelete]
+    [HttpDelete("unfollow")]
     public IActionResult UnfollowUser([FromBody] FollowUserDto followUserDto, [FromQuery] string userId)
     {
         _serviceManager.UserService.UnfollowUser(userId, followUserDto.userToFollow);
